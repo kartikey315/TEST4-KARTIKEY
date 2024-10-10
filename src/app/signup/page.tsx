@@ -1,34 +1,28 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { ChevronLeft, X } from "lucide-react";
-// import Image from "next/image";
 import Link from "next/link";
-// import axios from "axios";
-// import { useRouter } from "next/navigation";
-import { LoginButton } from "@telegram-auth/react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { LoginButton, TelegramAuthData } from "@telegram-auth/react";
 
 const SignUpPage = () => {
-  const [telegramId, setTelegramId] = useState("");
-  // const router = useRouter();
+  const router = useRouter();
   console.log(process.env.NEXT_PUBLIC_BOT_USERNAME);
-  // const sendOTP = async () => {
-  //   if (telegramId == "") {
-  //     alert("Please Enter Your Telegram ID");
-  //   }
+  const sendOTP = async (data: TelegramAuthData) => {
+    try {
+      const res = await axios.post("/send-otp", { telegramId: data.id });
 
-  //   try {
-  //     const res = await axios.post("/send-otp", { telegramId: telegramId });
-
-  //     if (res.data.status == "SUCCESS") {
-  //       router.push("/otpVerifiaction");
-  //     } else {
-  //       alert("Failed to Send OTP");
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+      if (res.data.status == "SUCCESS") {
+        router.push("/otpVerifiaction");
+      } else {
+        alert("Failed to Send OTP");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="bg-black text-white flex flex-col p-4 justify-start min-h-screen">
@@ -57,18 +51,11 @@ const SignUpPage = () => {
 
           <div className="text-center mb-8 flex flex-col items-center gap-2">
             <p className="mb-4">Kindly Enter Your Telegram Id</p>
-            <input
-              type="text"
-              value={telegramId}
-              onChange={(e) => setTelegramId(e.target.value)}
-              className="bg-black border border-gray-600 w-25 h-7 text-center text-2xl rounded-md mb-4"
-            />
+
             <LoginButton
+              showAvatar={false}
               botUsername={process.env.NEXT_PUBLIC_BOT_USERNAME!}
-              onAuthCallback={(data) => {
-                console.log(data);
-                // call your backend here to validate the data and sign in the user
-              }}
+              onAuthCallback={(data) => sendOTP(data)}
             />
           </div>
 
