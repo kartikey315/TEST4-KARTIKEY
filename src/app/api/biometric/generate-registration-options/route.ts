@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const uint8Id = encoder.encode(id);
     const options = await generateRegistrationOptions({
       rpName: "OneStep",
-      rpID: "https://test-4-kartikey.vercel.app",
+      rpID: "test-4-kartikey.vercel.app",
       userID: uint8Id,
       userName: username,
       attestationType: "none",
