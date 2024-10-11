@@ -9,8 +9,8 @@ export async function POST(req: NextRequest) {
     const verification = await verifyRegistrationResponse({
       response: credential,
       expectedChallenge: options.challenge, // replace with real challenge
-      expectedOrigin: "http://localhost:3000",
-      expectedRPID: "localhost",
+      expectedOrigin: "https://test-4-kartikey.vercel.app",
+      expectedRPID: "test-4-kartikey.vercel.app",
     });
 
     if (verification.verified) {
