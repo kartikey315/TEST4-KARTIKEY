@@ -1,9 +1,5 @@
+import { otpStorage } from "@/lib/localDb";
 import { NextRequest, NextResponse } from "next/server";
-// import { authenticator } from "otplib";
-
-const otpStorage: Record<string, string> = {};
-
-// const SECRET_KEY = process.env.OTP_GENERATION_SECRET_KEY;
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,13 +16,17 @@ export async function POST(req: NextRequest) {
     if (!storedOtp) {
       return NextResponse.json({
         message: "No OTP found for this Telegram ID.",
+        status: "FAILED",
       });
     }
 
     if (storedOtp === otp) {
-      NextResponse.json({ message: "OTP verified successfully" });
+      return NextResponse.json({
+        message: "OTP verified successfully",
+        status: "SUCCESS",
+      });
     } else {
-      NextResponse.json({ message: "Invalid OTP" });
+      return NextResponse.json({ message: "Invalid OTP", status: "FAILED" });
     }
   } catch (error) {
     console.error(error);

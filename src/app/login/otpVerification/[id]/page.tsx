@@ -2,11 +2,17 @@
 
 import React, { useState } from "react";
 import { ChevronLeft, X } from "lucide-react";
+import axios from "axios";
+import useSendOTP from "@/hooks/useSendOtp";
 
-const OTPVerification = () => {
-  const [otp, setOtp] = useState(Array(6).fill("")); // State to hold each digit of the OTP
+interface UserPageProps {
+  params: { id: number };
+}
 
-  // Function to handle input change
+const OTPVerification = ({ params }: UserPageProps) => {
+  const [otp, setOtp] = useState(Array(6).fill(""));
+  const { sendOTP } = useSendOTP();
+
   const handleChangeOTP = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -28,8 +34,35 @@ const OTPVerification = () => {
   };
 
   const verifyOTP = async () => {
-    const fullOtp = otp.join("");
-    console.log("Full OTP entered:", fullOtp);
+    console.log(otp.length);
+    if (otp.includes("")) {
+      alert("Please Enter Valid OTP");
+    }
+    try {
+      const fullOtp = otp.join("");
+      const telegramId = params.id;
+      const res = await axios.post("/api/verify-otp", {
+        telegramId: telegramId,
+        otp: fullOtp,
+      });
+
+      if (res.data.status == "SUCCESS") {
+        alert("OTP Verified Successfully");
+      } else {
+        alert("Wrong OTP");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleResendOTP = async (telegramId: number) => {
+    const success = await sendOTP({ telegramId });
+    if (success) {
+      alert("OTP Resent Successfully");
+    } else {
+      alert("Failed to send OTP for login");
+    }
   };
 
   return (
@@ -88,9 +121,12 @@ const OTPVerification = () => {
 
           <p className="text-center text-gray-400">
             Didn’t receive your OTP?{" "}
-            <a href="/resend-otp" className="text-yellow-600 font-semibold">
+            <button
+              onClick={() => handleResendOTP(params.id)}
+              className="text-yellow-600 font-semibold"
+            >
               Resend OTP
-            </a>
+            </button>
           </p>
         </div>
 

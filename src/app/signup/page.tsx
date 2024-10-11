@@ -1,40 +1,35 @@
 "use client";
 
 import React from "react";
-import { ChevronLeft, X } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import Link from "next/link";
-import axios from "axios";
 import { useRouter } from "next/navigation";
-import { LoginButton, TelegramAuthData } from "@telegram-auth/react";
+import useSendOTP from "@/hooks/useSendOtp";
 
 const SignUpPage = () => {
   const router = useRouter();
-  console.log(process.env.NEXT_PUBLIC_BOT_USERNAME);
-  const sendOTP = async (data: TelegramAuthData) => {
-    try {
-      const res = await axios.post("/send-otp", { telegramId: data.id });
+  const { sendOTP } = useSendOTP();
 
-      if (res.data.status == "SUCCESS") {
-        router.push("/otpVerifiaction");
-      } else {
-        alert("Failed to Send OTP");
-      }
-    } catch (error) {
-      console.log(error);
+  const handleTelegramLogin = async (telegramId: number) => {
+    const success = await sendOTP({ telegramId });
+    if (success) {
+      router.push(`/signup/otpVerification/${telegramId}`);
+    } else {
+      alert("Failed to send OTP for login");
     }
   };
 
   return (
-    <div className="bg-black text-white flex flex-col p-4 justify-start min-h-screen">
+    <div className="bg-black text-white flex flex-col p-6 justify-start min-h-screen">
       <div className="flex justify-between items-center mb-8">
         <Link href="/login" className="flex items-center text-sm">
           {" "}
-          <ChevronLeft /> Back to Login
+          <ArrowLeft className="mr-2" /> Back to Login
         </Link>
 
         <div className="text-xl font-bold">ONESTEP</div>
         <button className="text-gray-400">
-          <X size={24} />
+          <X />
         </button>
       </div>
 
@@ -52,11 +47,15 @@ const SignUpPage = () => {
           <div className="text-center mb-8 flex flex-col items-center gap-2">
             <p className="mb-4">Kindly Enter Your Telegram Id</p>
 
-            <LoginButton
+            {/* <LoginButton
               showAvatar={false}
               botUsername={process.env.NEXT_PUBLIC_BOT_USERNAME!}
-              onAuthCallback={(data) => sendOTP(data)}
-            />
+              onAuthCallback={(data) => sendOTP(data.id)}
+            /> */}
+            <button onClick={() => handleTelegramLogin(1024290011)}>
+              {" "}
+              SEND OTP
+            </button>
           </div>
 
           <div className="text-center mb-8">
