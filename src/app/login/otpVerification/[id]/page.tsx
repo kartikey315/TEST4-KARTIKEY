@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronLeft, X } from "lucide-react";
 import axios from "axios";
 import useSendOTP from "@/hooks/useSendOtp";
 import { signIn } from "next-auth/react";
@@ -84,16 +83,7 @@ const OTPVerification = ({ params }: UserPageProps) => {
     <div className="bg-black min-h-screen flex flex-col justify-start text-white">
       {/* Back Button */}
       <div className="flex items-center justify-between mb-8">
-        <button className="text-white text-sm flex items-center">
-          <span className="mr-2">
-            <ChevronLeft />
-          </span>
-          Back
-        </button>
         <div className="text-xl font-bold">ONESTEP</div>
-        <button className="text-gray-400">
-          <X size={24} />
-        </button>
       </div>
 
       <div className="bg-black flex flex-col items-center justify-center min-w-screen min-h-[90vh]">

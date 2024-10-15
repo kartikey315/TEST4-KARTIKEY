@@ -24,8 +24,12 @@ export const authOptions: NextAuthOptions = {
       credentials: { id: { label: "Telegram Id", type: "text" } },
       async authorize(credentials) {
         try {
+          if (!credentials?.id) {
+            console.log("Missing credentials.");
+            return null;
+          }
           const existingUser = await prisma.user.findUnique({
-            where: { id: credentials?.id },
+            where: { id: credentials.id },
           });
           if (!existingUser) {
             return null;
@@ -33,7 +37,7 @@ export const authOptions: NextAuthOptions = {
 
           return {
             id: existingUser.id,
-            username: existingUser.username,
+            email: existingUser.username,
           };
         } catch {
           console.log("Something went wrong while creating the user.");
@@ -63,7 +67,7 @@ export const authOptions: NextAuthOptions = {
           }
           return {
             id: existingUser.id,
-            username: existingUser.username,
+            email: existingUser.username,
           };
         } catch {
           console.log("Something went wrong while creating the user.");
