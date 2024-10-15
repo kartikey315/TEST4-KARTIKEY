@@ -43,7 +43,7 @@ const OTPVerification = ({ params }: UserPageProps) => {
     try {
       const fullOtp = otp.join("");
       const telegramId = params.id;
-      const res = await axios.post("/api/verify-otp", {
+      const res = await axios.post("/api/otp/verify-otp", {
         telegramId: telegramId,
         otp: fullOtp,
       });
