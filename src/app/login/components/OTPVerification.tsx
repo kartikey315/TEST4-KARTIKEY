@@ -6,11 +6,11 @@ import useSendOTP from "@/hooks/useSendOtp";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-interface UserPageProps {
-  params: { id: number };
+interface OTPVerificationProps {
+  telegramId: string;
 }
 
-const OTPVerification = ({ params }: UserPageProps) => {
+const OTPVerification = ({ telegramId }: OTPVerificationProps) => {
   const [otp, setOtp] = useState(Array(6).fill(""));
   const { sendOTP } = useSendOTP();
   const router = useRouter();
@@ -41,26 +41,23 @@ const OTPVerification = ({ params }: UserPageProps) => {
     }
     try {
       const fullOtp = otp.join("");
-      const telegramId = params.id;
+
       const res = await axios.post("/api/otp/verify-otp", {
         telegramId: telegramId,
         otp: fullOtp,
       });
 
       if (res.data.status == "SUCCESS") {
-        const signInData = await signIn("credentials", {
-          id: params.id,
+        const signInData = await signIn("telegram-login", {
+          redirect: false,
+          id: telegramId,
         });
-
+        console.log(signInData);
         if (signInData?.ok) {
-          alert({
-            title: "Signed In Succesfully",
-          });
+          alert("Signed In Succesfully");
           router.push("/dashboard");
         } else {
-          alert({
-            title: "Sign In Failed ",
-          });
+          alert("Sign In Failed ");
         }
       } else {
         alert("Wrong OTP");
@@ -81,11 +78,6 @@ const OTPVerification = ({ params }: UserPageProps) => {
 
   return (
     <div className="bg-black min-h-screen flex flex-col justify-start text-white">
-      {/* Back Button */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="text-xl font-bold">ONESTEP</div>
-      </div>
-
       <div className="bg-black flex flex-col items-center justify-center min-w-screen min-h-[90vh]">
         <div className="bg-black text-white p-8 max-w-lg rounded-lg shadow-md border-gray-700 border-2">
           <h1 className="text-4xl font-semibold text-center mb-4">
@@ -127,7 +119,7 @@ const OTPVerification = ({ params }: UserPageProps) => {
           <p className="text-center text-gray-400">
             Didn’t receive your OTP?{" "}
             <button
-              onClick={() => handleResendOTP(params.id.toString())}
+              onClick={() => handleResendOTP(telegramId)}
               className="text-yellow-600 font-semibold"
             >
               Resend OTP
