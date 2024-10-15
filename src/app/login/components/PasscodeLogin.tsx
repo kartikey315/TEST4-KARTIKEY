@@ -4,10 +4,12 @@ import { signIn } from "next-auth/react";
 import { LoginProps } from "./SocialLogin";
 import BiometricLoginWidget from "./BiometricLoginWidget";
 import SocialLoginWidget from "./SocialLoginWidget";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const PasscodeLogin = ({ setCurrentLoginMethod }: LoginProps) => {
   const router = useRouter();
   const [passcode, setPasscode] = useState(["", "", "", "", "", ""]);
+  const [loading, setLoading] = useState(false);
 
   const handlePasscodeChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -36,18 +38,24 @@ const PasscodeLogin = ({ setCurrentLoginMethod }: LoginProps) => {
       alert("Please Enter Valid OTP");
       return;
     }
+    try {
+      setLoading(true);
+      const signInData = await signIn("passcode-login", {
+        redirect: false,
+        passcode: passcode.join(""),
+      });
 
-    const signInData = await signIn("passcode-login", {
-      redirect: false,
-      passcode: passcode.join(""),
-    });
-
-    console.log(signInData);
-    if (signInData?.ok) {
-      alert("Signed In Succesfully");
-      router.push("/dashboard");
-    } else {
-      alert("Sign In Failed ");
+      console.log(signInData);
+      if (signInData?.ok) {
+        alert("Signed In Succesfully");
+        router.push("/dashboard");
+      } else {
+        alert("Sign In Failed ");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -80,12 +88,16 @@ const PasscodeLogin = ({ setCurrentLoginMethod }: LoginProps) => {
                 />
               ))}
             </div>
-            <button
-              onClick={handlePasscodeLogin}
-              className="w-[84%] bg-yellow-600 text-black py-2 rounded font-semibold mb-4"
-            >
-              PROCEED
-            </button>
+            {loading ? (
+              <ClipLoader color="#ca8a04" />
+            ) : (
+              <button
+                onClick={handlePasscodeLogin}
+                className="bg-yellow-600 text-black px-6 py-3 w-full rounded-md font-semibold"
+              >
+                PROCEED
+              </button>
+            )}
           </div>
 
           <p className="text-center text-gray-400">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Fingerprint, ScanFace } from "lucide-react";
 import { LoginProps } from "./SocialLogin";
 import SocialLoginWidget from "./SocialLoginWidget";
@@ -7,12 +7,15 @@ import { signIn } from "next-auth/react";
 import axios from "axios";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { useRouter } from "next/navigation";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const BiometricLogin = ({ setCurrentLoginMethod }: LoginProps) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleBiometricLogin = async () => {
     try {
+      setLoading(true);
       const res = await axios.get(
         "/api/biometric/auth/generate-authentication-options"
       );
@@ -47,6 +50,8 @@ const BiometricLogin = ({ setCurrentLoginMethod }: LoginProps) => {
     } catch (error) {
       alert("BioMetric Login Failed");
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,22 +74,27 @@ const BiometricLogin = ({ setCurrentLoginMethod }: LoginProps) => {
             <p className="text-gray-400 mb-4 mt-4">
               KINDLY SELECT A METHOD BELOW
             </p>
-            <div className="flex justify-center space-x-4 mb-4 gap-10">
-              <div
-                onClick={handleBiometricLogin}
-                className="flex flex-col items-center gap-2 hover:cursor-pointer border-gray-700 border-2 p-4 px-10 rounded-md"
-              >
-                <Fingerprint size={48} className="text-yellow-600" />
-                <h4>Touch Id</h4>
+            {loading ? (
+              <ClipLoader color="#ca8a04" />
+            ) : (
+              <div className="flex justify-center space-x-4 mb-4 gap-10">
+                <div
+                  onClick={handleBiometricLogin}
+                  className="flex flex-col items-center gap-2 hover:cursor-pointer border-gray-700 border-2 p-4 px-10 rounded-md"
+                >
+                  <Fingerprint size={48} className="text-yellow-600" />
+                  <h4>Touch Id</h4>
+                </div>
+                <div
+                  onClick={handleBiometricLogin}
+                  className="flex flex-col items-center gap-2 hover:cursor-pointer border-gray-700 border-2 p-4 px-10  rounded-md"
+                >
+                  <ScanFace size={48} className="text-yellow-600" />
+                  <h4>Face Id</h4>
+                </div>
               </div>
-              <div
-                onClick={handleBiometricLogin}
-                className="flex flex-col items-center gap-2 hover:cursor-pointer border-gray-700 border-2 p-4 px-10  rounded-md"
-              >
-                <ScanFace size={48} className="text-yellow-600" />
-                <h4>Face Id</h4>
-              </div>
-            </div>
+            )}
+
             <p className="text-gray-400 text-sm mb-2">
               Having trouble using OneStep Verification?
             </p>

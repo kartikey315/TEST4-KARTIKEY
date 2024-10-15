@@ -4,7 +4,7 @@ import useSendOTP from "@/hooks/useSendOtp";
 import BiometricLoginWidget from "./BiometricLoginWidget";
 import PasscodeLoginWidget from "./PasscodeLoginWidget";
 import OTPVerification from "./OTPVerification";
-
+import ClipLoader from "react-spinners/ClipLoader";
 export interface LoginProps {
   setCurrentLoginMethod: (method: string) => void;
 }
@@ -13,15 +13,23 @@ const SocialLogin = ({ setCurrentLoginMethod }: LoginProps) => {
   const { sendOTP } = useSendOTP();
   const [otpSent, setOtpSent] = useState(false);
   const [telegramId, setTelegramID] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleTelegramLogin = async (telegramId: string) => {
-    const success = await sendOTP({ telegramId });
+    try {
+      setLoading(true);
+      const success = await sendOTP({ telegramId });
 
-    if (success) {
-      setTelegramID(telegramId);
-      setOtpSent(true);
-    } else {
-      alert("Failed to send OTP for login");
+      if (success) {
+        setTelegramID(telegramId);
+        setOtpSent(true);
+      } else {
+        alert("Failed to send OTP for login");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,17 +52,17 @@ const SocialLogin = ({ setCurrentLoginMethod }: LoginProps) => {
                 Use the Onestep Verification to Log into your Account
               </p>
               <div className="flex justify-center mb-6">
-                <LoginButton
-                  showAvatar={false}
-                  botUsername={process.env.NEXT_PUBLIC_BOT_USERNAME!}
-                  onAuthCallback={(data) =>
-                    handleTelegramLogin(data.id.toString())
-                  }
-                />
-                <button onClick={() => handleTelegramLogin("1024290011")}>
-                  {" "}
-                  SEND OTP
-                </button>
+                {loading ? (
+                  <ClipLoader color="#ca8a04" />
+                ) : (
+                  <LoginButton
+                    showAvatar={false}
+                    botUsername={process.env.NEXT_PUBLIC_BOT_USERNAME!}
+                    onAuthCallback={(data) =>
+                      handleTelegramLogin(data.id.toString())
+                    }
+                  />
+                )}
               </div>
 
               <div className="flex items-center justify-center mt-14 mb-12">

@@ -5,6 +5,7 @@ import axios from "axios";
 import useSendOTP from "@/hooks/useSendOtp";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import ClipLoader from "react-spinners/ClipLoader";
 
 interface OTPVerificationProps {
   telegramId: string;
@@ -12,6 +13,7 @@ interface OTPVerificationProps {
 
 const OTPVerification = ({ telegramId }: OTPVerificationProps) => {
   const [otp, setOtp] = useState(Array(6).fill(""));
+  const [loading, setLoading] = useState(false);
   const { sendOTP } = useSendOTP();
   const router = useRouter();
 
@@ -40,6 +42,7 @@ const OTPVerification = ({ telegramId }: OTPVerificationProps) => {
       alert("Please Enter Valid OTP");
     }
     try {
+      setLoading(true);
       const fullOtp = otp.join("");
 
       const res = await axios.post("/api/otp/verify-otp", {
@@ -64,15 +67,21 @@ const OTPVerification = ({ telegramId }: OTPVerificationProps) => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleResendOTP = async (telegramId: string) => {
-    const success = await sendOTP({ telegramId });
-    if (success) {
-      alert("OTP Resent Successfully");
-    } else {
-      alert("Failed to send OTP for login");
+    try {
+      const success = await sendOTP({ telegramId });
+      if (success) {
+        alert("OTP Resent Successfully");
+      } else {
+        alert("Failed to send OTP for login");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -108,12 +117,16 @@ const OTPVerification = ({ telegramId }: OTPVerificationProps) => {
           </div>
 
           <div className="flex justify-center mb-6">
-            <button
-              onClick={verifyOTP}
-              className="bg-yellow-600 text-black px-6 py-3 w-full rounded-md font-semibold"
-            >
-              PROCEED
-            </button>
+            {loading ? (
+              <ClipLoader color="#ca8a04" />
+            ) : (
+              <button
+                onClick={verifyOTP}
+                className="bg-yellow-600 text-black px-6 py-3 w-full rounded-md font-semibold"
+              >
+                PROCEED
+              </button>
+            )}
           </div>
 
           <p className="text-center text-gray-400">
