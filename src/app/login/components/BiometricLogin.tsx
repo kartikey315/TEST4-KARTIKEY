@@ -56,72 +56,68 @@ const BiometricLogin = ({ setCurrentLoginMethod }: LoginProps) => {
   };
 
   return (
-    <div className="bg-black flex flex-col justify-start">
-      <div className="bg-black flex flex-col items-center justify-center min-w-screen">
-        <div className="bg-black border-gray-800 border-2 text-white p-8 w-[1000px] max-h-[960px] rounded-lg shadow-md">
-          <h1 className="text-4xl font-semibold text-center mb-4">Login</h1>
-          <p className="text-center text-gray-400 mb-8">
-            Access Wealth with either your OneStep Passcode, OneStep Biometrics
-            or OneStep ID Verification
+    <div className="bg-black flex flex-col items-center justify-center min-w-screen">
+      <div className="bg-black border-gray-800 border-2 text-white p-6 sm:p-8 max-w-[80%] min-h-[90%] rounded-lg shadow-md">
+        <h1 className="text-3xl sm:text-4xl font-semibold text-center mb-4">
+          Login
+        </h1>
+        <p className="text-center text-gray-400 mb-8">
+          Access Wealth with either your OneStep Passcode, OneStep Biometrics or
+          OneStep ID Verification
+        </p>
+
+        <div className="max-w-md mx-auto flex flex-col items-center">
+          <h3 className="text-lg font-semibold mb-2">ONESTEP BIOMETRICS</h3>
+          <p className="text-gray-400 mb-4">
+            Login to your Account made easy with the Onestep Biometrics
           </p>
-          <div className="max-w-md mx-auto flex flex-col items-center">
-            <h3 className="text-lg font-semibold mb-2">
-              USE ONESTEP BIOMETRICS TO LOGIN
-            </h3>
-            <p className="text-gray-400 mb-4">
-              Login to your Account made easy with the Onestep Biometrics
-            </p>
-            <p className="text-gray-400 mb-4 mt-4">
-              KINDLY SELECT A METHOD BELOW
-            </p>
-            {loading ? (
-              <ClipLoader color="#ca8a04" />
-            ) : (
-              <div className="flex justify-center space-x-4 mb-4 gap-10">
-                <div
-                  onClick={handleBiometricLogin}
-                  className="flex flex-col items-center gap-2 hover:cursor-pointer border-gray-700 border-2 p-4 px-10 rounded-md"
-                >
-                  <Fingerprint size={48} className="text-yellow-600" />
-                  <h4>Touch Id</h4>
-                </div>
-                <div
-                  onClick={handleBiometricLogin}
-                  className="flex flex-col items-center gap-2 hover:cursor-pointer border-gray-700 border-2 p-4 px-10  rounded-md"
-                >
-                  <ScanFace size={48} className="text-yellow-600" />
-                  <h4>Face Id</h4>
-                </div>
+          <p className="text-gray-400 mb-4 mt-4">
+            KINDLY SELECT A METHOD BELOW
+          </p>
+          {loading ? (
+            <ClipLoader color="#ca8a04" />
+          ) : (
+            <div className="flex flex-col sm:flex-row justify-center space-x-0 sm:space-x-4 mb-4 gap-6 sm:gap-10">
+              <div
+                onClick={handleBiometricLogin}
+                className="flex flex-col items-center gap-2 hover:cursor-pointer border-gray-700 border-2 p-4 px-10 rounded-md"
+              >
+                <Fingerprint size={48} className="text-yellow-600" />
+                <h4>Touch Id</h4>
               </div>
-            )}
-
-            <p className="text-gray-400 text-sm mb-2">
-              Having trouble using OneStep Verification?
-            </p>
-            <button className="w-full bg-yellow-600 text-black py-2 rounded font-semibold">
-              HELP CENTRE
-            </button>
-          </div>
-
-          <div className="flex items-center justify-center mt-14 mb-12">
-            <div className="border-t border-gray-800  w-[40%]"></div>
-            <p className="text-center mx-2">OR</p>
-            <div className="border-t border-gray-800  w-[40%]"></div>
-          </div>
-          <div className="flex justify-center items-center gap-4">
-            <SocialLoginWidget setCurrentLoginMethod={setCurrentLoginMethod} />
-            <div className="border-l-2 border-gray-800 min-h-[40vh] min-w-2 text-black">
-              k
+              <div
+                onClick={handleBiometricLogin}
+                className="flex flex-col items-center gap-2 hover:cursor-pointer border-gray-700 border-2 p-4 px-10 rounded-md"
+              >
+                <ScanFace size={48} className="text-yellow-600" />
+                <h4>Face Id</h4>
+              </div>
             </div>
+          )}
+
+          <p className="text-gray-400 text-sm mb-2">
+            Having trouble using OneStep Verification?
+          </p>
+          <button className="w-[80%] bg-yellow-600 text-black py-2 rounded font-semibold">
+            HELP CENTRE
+          </button>
+        </div>
+
+        <div className="flex items-center justify-center mt-14 mb-12">
+          <div className="border-t border-gray-800 w-[40%] sm:w-[35%]"></div>
+          <p className="text-center mx-2">OR</p>
+          <div className="border-t border-gray-800 w-[40%] sm:w-[35%]"></div>
+        </div>
+        <div className="flex justify-center max-w-[100%]">
+          <div className="flex flex-col sm:flex-row justify-between min-w-[60%] items-center gap-4">
+            <SocialLoginWidget setCurrentLoginMethod={setCurrentLoginMethod} />
+            <div className="border-l-2 hidden sm:block border-gray-800 sm:min-h-[40vh] mx-10 ml-32 text-black"></div>
             <PasscodeLoginWidget
               setCurrentLoginMethod={setCurrentLoginMethod}
             />
           </div>
         </div>
       </div>
-      <button className="fixed bottom-4 right-4 bg-yellow-600 text-black p-2 rounded-full flex items-center">
-        <span className="mr-2">Recovery Center</span>
-      </button>
     </div>
   );
 };

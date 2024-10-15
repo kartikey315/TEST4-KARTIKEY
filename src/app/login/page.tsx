@@ -10,8 +10,8 @@ const Login = () => {
   const [currentLoginMethod, setCurrentLoginMethod] = useState("OnestepID");
 
   return (
-    <div className="bg-black min-h-screen flex flex-col pt-4">
-      <div className="flex items-center justify-center mb-8 text-white">
+    <div className="bg-black min-h-screen min-w-screen flex flex-col pt-4">
+      <div className="flex items-center justify-center mb-8 text-white min-w-full">
         <div className="text-xl font-bold">ONESTEP</div>
       </div>
       {currentLoginMethod == "OnestepID" ? (
@@ -21,7 +21,7 @@ const Login = () => {
       ) : (
         <BiometricLogin setCurrentLoginMethod={setCurrentLoginMethod} />
       )}
-      <div className="flex flex-col items-center mt-6 text-center justify-start">
+      <div className="flex flex-col items-center mt-6 text-center justify-start min-w-full">
         <div className="text-center text-sm text-gray-400">
           <p>
             By using Login you agree to our{" "}
@@ -35,7 +35,7 @@ const Login = () => {
             .
           </p>
         </div>
-        <p className="text-gray-400 mb-2">Are you new Here?</p>
+        <p className="text-gray-400 mb-2 ">Are you new Here?</p>
         <div className="w-[24%] bg-yellow-600 text-black py-2 rounded font-semibold mb-4">
           <Link href="/signup">SIGN UP</Link>
         </div>

@@ -8,7 +8,7 @@ const SocialLoginWidget = ({ setCurrentLoginMethod }: LoginProps) => {
   };
 
   return (
-    <div className="bg-black p-4 rounded flex flex-col items-center w-[50vh] mr-10">
+    <div className="bg-black p-4 rounded flex flex-col items-center">
       <h2 className="font-semibold mb-2 text-2xl">Use Onestep ID to Login</h2>
       <p className="text-xs text-gray-400 mb-4">
         Use your Onestep ID to login to your ECU Account
