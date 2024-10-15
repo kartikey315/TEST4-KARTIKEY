@@ -66,18 +66,18 @@ const SignUpPage = () => {
 
           <div className="text-center mb-8 flex flex-col items-center gap-2">
             {!loading ? (
-              // <LoginButton
-              //   showAvatar={false}
-              //   botUsername={process.env.NEXT_PUBLIC_BOT_USERNAME!}
-              //   onAuthCallback={(data) =>
-              //     handleTelegramLogin(data.id.toString())
-              //   }
-              // />
-              <button onClick={() => handleTelegramLogin("1024290011")}>
-                {" "}
-                SEND OTP
-              </button>
+              <LoginButton
+                showAvatar={false}
+                botUsername={process.env.NEXT_PUBLIC_BOT_USERNAME!}
+                onAuthCallback={(data) =>
+                  handleTelegramLogin(data.id.toString())
+                }
+              />
             ) : (
+              // <button onClick={() => handleTelegramLogin("1024290011")}>
+              //   {" "}
+              //   SEND OTP
+              // </button>
               <ClipLoader color="#ca8a04" />
             )}
           </div>
