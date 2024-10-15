@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const uint8Id = encoder.encode(id);
     const options = await generateRegistrationOptions({
       rpName: "OneStep",
-      rpID: "localhost",
+      rpID: process.env.RP_ID!,
       userID: uint8Id,
       userName: username,
       attestationType: "none",

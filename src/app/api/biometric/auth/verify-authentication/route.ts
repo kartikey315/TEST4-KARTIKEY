@@ -17,8 +17,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "User Not Found", success: false });
     }
 
-    const rpID = "localhost";
-    const origin = "http://localhost:3000";
+    const rpID = process.env.RP_ID!;
+    const origin = process.env.RP_ORIGIN!;
     const publicKey = isoBase64URL.toBuffer(userPasskey.publicKey);
     const transports: any = userPasskey.transports;
     const verification = await verifyAuthenticationResponse({

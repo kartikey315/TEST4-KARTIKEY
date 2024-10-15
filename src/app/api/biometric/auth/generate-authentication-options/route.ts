@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const authenticationOptions = await generateAuthenticationOptions({
-      rpID: "localhost",
+      rpID: process.env.RP_ID!,
       allowCredentials: [], // This is left empty to allow any discoverable credential to be used
       userVerification: "required",
     });
