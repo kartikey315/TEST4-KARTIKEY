@@ -1,14 +1,13 @@
 import axios from "axios";
 
 interface SendOTPParams {
-  telegramId: number;
+  telegramId: string;
 }
 
 const useSendOTP = () => {
   const sendOTP = async ({ telegramId }: SendOTPParams): Promise<boolean> => {
     try {
-      const res = await axios.post("/api/send-otp", { telegramId });
-
+      const res = await axios.post("/api/otp/send-otp", { telegramId });
       if (res.data.status === "SUCCESS") {
         return true;
       } else {

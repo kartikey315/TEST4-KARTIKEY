@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { ChevronLeft, X } from "lucide-react";
 import axios from "axios";
 import useSendOTP from "@/hooks/useSendOtp";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface UserPageProps {
   params: { id: number };
@@ -12,6 +14,7 @@ interface UserPageProps {
 const OTPVerification = ({ params }: UserPageProps) => {
   const [otp, setOtp] = useState(Array(6).fill(""));
   const { sendOTP } = useSendOTP();
+  const router = useRouter();
 
   const handleChangeOTP = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -34,7 +37,6 @@ const OTPVerification = ({ params }: UserPageProps) => {
   };
 
   const verifyOTP = async () => {
-    console.log(otp.length);
     if (otp.includes("")) {
       alert("Please Enter Valid OTP");
     }
@@ -47,7 +49,20 @@ const OTPVerification = ({ params }: UserPageProps) => {
       });
 
       if (res.data.status == "SUCCESS") {
-        alert("OTP Verified Successfully");
+        const signInData = await signIn("credentials", {
+          id: params.id,
+        });
+
+        if (signInData?.ok) {
+          alert({
+            title: "Signed In Succesfully",
+          });
+          router.push("/dashboard");
+        } else {
+          alert({
+            title: "Sign In Failed ",
+          });
+        }
       } else {
         alert("Wrong OTP");
       }
@@ -56,7 +71,7 @@ const OTPVerification = ({ params }: UserPageProps) => {
     }
   };
 
-  const handleResendOTP = async (telegramId: number) => {
+  const handleResendOTP = async (telegramId: string) => {
     const success = await sendOTP({ telegramId });
     if (success) {
       alert("OTP Resent Successfully");
@@ -122,7 +137,7 @@ const OTPVerification = ({ params }: UserPageProps) => {
           <p className="text-center text-gray-400">
             Didn’t receive your OTP?{" "}
             <button
-              onClick={() => handleResendOTP(params.id)}
+              onClick={() => handleResendOTP(params.id.toString())}
               className="text-yellow-600 font-semibold"
             >
               Resend OTP

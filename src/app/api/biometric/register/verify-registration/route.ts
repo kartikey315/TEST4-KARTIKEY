@@ -1,16 +1,27 @@
 import { verifyRegistrationResponse } from "@simplewebauthn/server";
+import { isoBase64URL } from "@simplewebauthn/server/helpers";
 import { NextRequest, NextResponse } from "next/server";
+
+export interface Passkey {
+  webAuthnUserID: string;
+  credentialid: string;
+  publicKey: string;
+  counter: number;
+  deviceType: string;
+  backedUp: boolean;
+  transports: string[];
+}
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { username, id, credential, options } = body;
+  const { credential, options } = body;
 
   try {
     const verification = await verifyRegistrationResponse({
       response: credential,
-      expectedChallenge: options.challenge, // replace with real challenge
-      expectedOrigin: "https://test-4-kartikey.vercel.app",
-      expectedRPID: "test-4-kartikey.vercel.app",
+      expectedChallenge: options.challenge,
+      expectedOrigin: "http://localhost:3000",
+      expectedRPID: "localhost",
     });
 
     if (verification.verified) {
@@ -23,13 +34,12 @@ export async function POST(req: NextRequest) {
         credentialBackedUp,
       } = registrationInfo!;
 
-      const user = { id: id, username: username };
+      console.log(credentialPublicKey);
 
-      const newPasskey = {
-        user,
+      const newPasskey: Passkey = {
         webAuthnUserID: options.user.id,
-        id: credentialID,
-        publicKey: credentialPublicKey,
+        credentialid: credentialID,
+        publicKey: isoBase64URL.fromBuffer(credentialPublicKey),
         counter,
         deviceType: credentialDeviceType,
         backedUp: credentialBackedUp,

@@ -5,12 +5,13 @@ import { ArrowLeft, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useSendOTP from "@/hooks/useSendOtp";
+import { LoginButton } from "@telegram-auth/react";
 
 const SignUpPage = () => {
   const router = useRouter();
   const { sendOTP } = useSendOTP();
 
-  const handleTelegramLogin = async (telegramId: number) => {
+  const handleTelegramLogin = async (telegramId: string) => {
     const success = await sendOTP({ telegramId });
     if (success) {
       router.push(`/signup/otpVerification/${telegramId}`);
@@ -45,17 +46,15 @@ const SignUpPage = () => {
           </div>
 
           <div className="text-center mb-8 flex flex-col items-center gap-2">
-            <p className="mb-4">Kindly Enter Your Telegram Id</p>
-
-            {/* <LoginButton
+            <LoginButton
               showAvatar={false}
               botUsername={process.env.NEXT_PUBLIC_BOT_USERNAME!}
-              onAuthCallback={(data) => sendOTP(data.id)}
-            /> */}
-            <button onClick={() => handleTelegramLogin(1024290011)}>
+              onAuthCallback={(data) => handleTelegramLogin(data.id.toString())}
+            />
+            {/* <button onClick={() => handleTelegramLogin("1024290011")}>
               {" "}
               SEND OTP
-            </button>
+            </button> */}
           </div>
 
           <div className="text-center mb-8">

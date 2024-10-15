@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { ArrowLeft, X } from "lucide-react";
 import axios from "axios";
-import useSendOTP from "@/hooks/useSendOtp";
 import { usePathname, useRouter } from "next/navigation";
 
 interface UserPageProps {
@@ -12,7 +11,6 @@ interface UserPageProps {
 
 const OTPVerification = ({ params }: UserPageProps) => {
   const [otp, setOtp] = useState(Array(6).fill(""));
-  const { sendOTP } = useSendOTP();
   const router = useRouter();
   const pathName = usePathname();
 
@@ -44,11 +42,12 @@ const OTPVerification = ({ params }: UserPageProps) => {
     try {
       const fullOtp = otp.join("");
       const telegramId = params.id;
-      const res = await axios.post("/api/verify-otp", {
-        telegramId: telegramId,
+      const res = await axios.post("/api/otp/verify-otp", {
+        telegramId: telegramId.toString(),
         otp: fullOtp,
       });
 
+      console.log(res);
       if (res.data.status == "SUCCESS") {
         alert("OTP Verified Successfully");
         if (pathName.includes("/signup")) {
@@ -64,12 +63,19 @@ const OTPVerification = ({ params }: UserPageProps) => {
     }
   };
 
-  const handleResendOTP = async (telegramId: number) => {
-    const success = await sendOTP({ telegramId });
-    if (success) {
-      alert("OTP Resent Successfully");
-    } else {
-      alert("Failed to send OTP for login");
+  const handleResendOTP = async (telegramId: string) => {
+    try {
+      const res = await axios.post("/api/otp/resend-otp", { telegramId });
+      if (res.data.status === "SUCCESS") {
+        const newOtp = ["", "", "", "", "", ""];
+        setOtp(newOtp);
+        alert("OTP Resent Successfully");
+      } else {
+        throw new Error("Failed to Send OTP");
+      }
+    } catch (err) {
+      console.log(err);
+      return false;
     }
   };
 
@@ -128,7 +134,7 @@ const OTPVerification = ({ params }: UserPageProps) => {
           <p className="text-center text-gray-400">
             Didn’t receive your OTP?{" "}
             <button
-              onClick={() => handleResendOTP(params.id)}
+              onClick={() => handleResendOTP(params.id.toString())}
               className="text-yellow-600 font-semibold"
             >
               Resend OTP

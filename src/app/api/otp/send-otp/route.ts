@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { authenticator } from "otplib";
-import { otpStorage } from "@/lib/localDb";
+import { prisma } from "@/lib/prisma";
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const SECRET_KEY = process.env.OTP_GENERATION_SECRET_KEY;
@@ -15,7 +15,29 @@ export async function POST(req: NextRequest) {
     }
     const otp = authenticator.generate(SECRET_KEY!);
 
-    otpStorage[telegramId] = otp;
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+    const user = await prisma.oTP.findUnique({ where: { id: telegramId } });
+
+    if (!user) {
+      await prisma.oTP.create({
+        data: {
+          id: telegramId,
+          otp: otp,
+          expiresAt,
+        },
+      });
+    } else {
+      await prisma.oTP.update({
+        where: {
+          id: telegramId,
+        },
+        data: {
+          otp: otp,
+          expiresAt,
+        },
+      });
+    }
 
     const message = `Your OTP for verification is: ${otp}`;
     const telegramUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;

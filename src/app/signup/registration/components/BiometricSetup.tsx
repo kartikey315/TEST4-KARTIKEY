@@ -1,11 +1,11 @@
 import React from "react";
-import { ArrowLeft, X, Fingerprint, Scan } from "lucide-react";
+import { ArrowLeft, X, Fingerprint, ScanFace } from "lucide-react";
 import { startRegistration } from "@simplewebauthn/browser";
 
 import axios from "axios";
 import { AccountDetails } from "../[id]/page";
 
-interface PasscodeSetupParams {
+interface BiometricsSetupParams {
   accountDetails: AccountDetails;
   setAccountDetails: (accountDetails: AccountDetails) => void;
 }
@@ -13,13 +13,13 @@ interface PasscodeSetupParams {
 const BiometricsSetup = ({
   accountDetails,
   setAccountDetails,
-}: PasscodeSetupParams) => {
+}: BiometricsSetupParams) => {
   const handleSetUpBiometrics = async () => {
     try {
       const username = accountDetails.username;
       const id = accountDetails.id;
       const response = await axios.post(
-        "/api/biometric/generate-registration-options",
+        "/api/biometric/register/generate-registration-options",
         { username, id }
       );
       const options = response.data.options;
@@ -27,7 +27,7 @@ const BiometricsSetup = ({
       const credential = await startRegistration(options);
 
       const verifyResponse = await axios.post(
-        "/api/biometric/verify-registration",
+        "/api/biometric/register/verify-registration",
         {
           username,
           id,
@@ -93,7 +93,7 @@ const BiometricsSetup = ({
             </div>
             <div className="flex flex-col items-center">
               <div className="bg-gray-800 rounded-full p-4 mb-2">
-                <Scan size={48} />
+                <ScanFace size={48} />
               </div>
               <span className="text-sm">Face ID</span>
               <button

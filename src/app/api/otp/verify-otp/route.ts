@@ -1,4 +1,4 @@
-import { otpStorage } from "@/lib/localDb";
+import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -11,16 +11,21 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const storedOtp = otpStorage[telegramId];
+    const otpRecord = await prisma.oTP.findFirst({
+      where: {
+        id: telegramId,
+        otp,
+      },
+    });
 
-    if (!storedOtp) {
+    if (!otpRecord) {
       return NextResponse.json({
         message: "No OTP found for this Telegram ID.",
         status: "FAILED",
       });
     }
 
-    if (storedOtp === otp) {
+    if (otpRecord.otp === otp) {
       return NextResponse.json({
         message: "OTP verified successfully",
         status: "SUCCESS",

@@ -36,8 +36,13 @@ const PasscodeSetup = ({
   };
 
   const handleInput = (pass: string) => {
-    if (accountDetails.dateOfBirth!.includes(pass)) {
+    if (
+      accountDetails?.dateOfBirth &&
+      pass.includes(accountDetails.dateOfBirth)
+    ) {
       setErrors("Your Passcode contains information about your DOB");
+    } else if (pass.length > 6) {
+      setErrors("Passcode should not exceed 6 digits");
     } else {
       setErrors("");
     }
@@ -101,7 +106,7 @@ const PasscodeSetup = ({
                 type="password"
                 value={passcode}
                 onChange={(e) => handleInput(e.target.value)}
-                placeholder="Enter Passcode"
+                placeholder="Enter 6-Digit Passcode"
                 className="bg-transparent w-full outline-none text-white"
               />
             </div>
