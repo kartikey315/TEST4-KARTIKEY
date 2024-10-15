@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     }
     const otp = authenticator.generate(SECRET_KEY!);
 
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     const user = await prisma.oTP.findUnique({ where: { id: telegramId } });
 

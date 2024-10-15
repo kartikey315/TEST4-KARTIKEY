@@ -47,7 +47,6 @@ const OTPVerification = ({ params }: UserPageProps) => {
         otp: fullOtp,
       });
 
-      console.log(res);
       if (res.data.status == "SUCCESS") {
         alert("OTP Verified Successfully");
         if (pathName.includes("/signup")) {
@@ -56,7 +55,7 @@ const OTPVerification = ({ params }: UserPageProps) => {
           router.push("/");
         }
       } else {
-        alert("Wrong OTP");
+        alert(res.data.message);
       }
     } catch (error) {
       console.log(error);

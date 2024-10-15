@@ -26,10 +26,17 @@ export async function POST(req: NextRequest) {
     }
 
     if (otpRecord.otp === otp) {
-      return NextResponse.json({
-        message: "OTP verified successfully",
-        status: "SUCCESS",
-      });
+      if (new Date(otpRecord.expiresAt).getTime() > Date.now()) {
+        return NextResponse.json({
+          message: "OTP verified successfully",
+          status: "SUCCESS",
+        });
+      } else {
+        return NextResponse.json({
+          message: "OTP Expired",
+          status: "FAILED",
+        });
+      }
     } else {
       return NextResponse.json({ message: "Invalid OTP", status: "FAILED" });
     }
