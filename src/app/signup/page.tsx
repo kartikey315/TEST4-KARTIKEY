@@ -6,12 +6,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useSendOTP from "@/hooks/useSendOtp";
 import { LoginButton } from "@telegram-auth/react";
+import { prisma } from "@/lib/prisma";
 
 const SignUpPage = () => {
   const router = useRouter();
   const { sendOTP } = useSendOTP();
 
   const handleTelegramLogin = async (telegramId: string) => {
+    const user = await prisma.user.findUnique({ where: { id: telegramId } });
+    if (user) {
+      alert("User Already Registered");
+      router.push("/login");
+    }
     const success = await sendOTP({ telegramId });
     if (success) {
       router.push(`/signup/otpVerification/${telegramId}`);

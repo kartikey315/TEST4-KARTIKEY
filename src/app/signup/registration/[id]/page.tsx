@@ -8,6 +8,7 @@ import BiometricsSetup from "../components/BiometricSetup";
 import KYCSetup from "../components/KYCSetup";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import ClipLoader from "react-spinners/ClipLoader";
 
 export interface AccountDetails {
   id: string;
@@ -29,6 +30,8 @@ const Register = ({ params }: RegisterProps) => {
     id: params.id,
   });
   const [isReadyToRegister, setIsReadyToRegister] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("Registering User..");
   const router = useRouter();
 
   useEffect(() => {
@@ -44,15 +47,19 @@ const Register = ({ params }: RegisterProps) => {
 
   const registerUser = async () => {
     try {
+      setLoading(true);
       const res = await axios.post("/api/register", { accountDetails });
       console.log(res);
       if (res.data.success) {
+        setMessage("User Registered Successfully");
         router.push("/login");
       } else {
         alert("User Registration Failed");
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -86,9 +93,15 @@ const Register = ({ params }: RegisterProps) => {
         />
       ) : (
         <div className="bg-black min-h-screen items-center justify-center flex flex-col">
-          <h1 className="text-4xl font-bold mb-2 text-white text-center">
-            User Registered Successfully
-          </h1>
+          {!loading ? (
+            <h1 className="text-4xl font-bold mb-2 text-white text-center">
+              {message} <ClipLoader />
+            </h1>
+          ) : (
+            <h1 className="text-4xl font-bold mb-2 text-white text-center">
+              {message}
+            </h1>
+          )}
         </div>
       )}
     </div>
