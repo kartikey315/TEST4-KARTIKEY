@@ -94,12 +94,12 @@ const Register = ({ params }: RegisterProps) => {
       ) : (
         <div className="bg-black min-h-screen items-center justify-center flex flex-col">
           {!loading ? (
-            <h1 className="text-4xl font-bold mb-2 text-white text-center">
-              {message} <ClipLoader />
+            <h1 className="text-4xl font-bold mb-2 text-yellow-600 text-center">
+              {message}
             </h1>
           ) : (
-            <h1 className="text-4xl font-bold mb-2 text-white text-center">
-              {message}
+            <h1 className="text-4xl font-bold mb-2 text-yellow-600  text-center">
+              {message} <ClipLoader color="#ca8a04" />
             </h1>
           )}
         </div>

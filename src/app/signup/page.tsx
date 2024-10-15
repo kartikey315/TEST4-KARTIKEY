@@ -1,28 +1,41 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { ArrowLeft, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useSendOTP from "@/hooks/useSendOtp";
 import { LoginButton } from "@telegram-auth/react";
-import { prisma } from "@/lib/prisma";
+import axios from "axios";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const SignUpPage = () => {
   const router = useRouter();
   const { sendOTP } = useSendOTP();
+  const [loading, setLoading] = useState(false);
 
   const handleTelegramLogin = async (telegramId: string) => {
-    const user = await prisma.user.findUnique({ where: { id: telegramId } });
-    if (user) {
-      alert("User Already Registered");
-      router.push("/login");
-    }
-    const success = await sendOTP({ telegramId });
-    if (success) {
-      router.push(`/signup/otpVerification/${telegramId}`);
-    } else {
-      alert("Failed to send OTP for login");
+    try {
+      setLoading(true);
+      const user = await axios.post("/api/user", { id: telegramId });
+      if (user.data.success) {
+        alert("User Already Registered");
+        router.push("/login");
+        return;
+      } else {
+        console.log(user.data.message);
+      }
+
+      const success = await sendOTP({ telegramId });
+      if (success) {
+        router.push(`/signup/otpVerification/${telegramId}`);
+      } else {
+        alert("Failed to send OTP for login");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,15 +65,21 @@ const SignUpPage = () => {
           </div>
 
           <div className="text-center mb-8 flex flex-col items-center gap-2">
-            <LoginButton
-              showAvatar={false}
-              botUsername={process.env.NEXT_PUBLIC_BOT_USERNAME!}
-              onAuthCallback={(data) => handleTelegramLogin(data.id.toString())}
-            />
-            {/* <button onClick={() => handleTelegramLogin("1024290011")}>
-              {" "}
-              SEND OTP
-            </button> */}
+            {!loading ? (
+              // <LoginButton
+              //   showAvatar={false}
+              //   botUsername={process.env.NEXT_PUBLIC_BOT_USERNAME!}
+              //   onAuthCallback={(data) =>
+              //     handleTelegramLogin(data.id.toString())
+              //   }
+              // />
+              <button onClick={() => handleTelegramLogin("1024290011")}>
+                {" "}
+                SEND OTP
+              </button>
+            ) : (
+              <ClipLoader color="#ca8a04" />
+            )}
           </div>
 
           <div className="text-center mb-8">

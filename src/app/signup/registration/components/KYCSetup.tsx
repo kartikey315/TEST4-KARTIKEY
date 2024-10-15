@@ -70,7 +70,7 @@ const KYCSetup = ({ accountDetails, setAccountDetails }: KYCSetupParams) => {
         </button>
       </header>
 
-      <div className="bg-gray-950 rounded-lg p-6 mb-6 mt-10 ml-32 w-[120vh]">
+      <div className="bg-gray-950 rounded-lg p-6 mb-6 mt-10 mx-auto w-full max-w-[120vh] sm:w-[95%] lg:w-[90%]">
         <h1 className="text-2xl font-bold mb-6">Complete your Profile</h1>
         <h2 className="text-lg font-semibold mb-4 mt-18">
           Step 1: Personal Info
@@ -84,7 +84,7 @@ const KYCSetup = ({ accountDetails, setAccountDetails }: KYCSetupParams) => {
 
         <form
           onSubmit={handleSubmit}
-          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4"
         >
           <div className="flex flex-col justify-center bg-black border-gray-700 border-2 rounded px-3 py-2 mb-4">
             <label className="text-sm font-bold mb-2 text-gray-500">
@@ -207,34 +207,17 @@ const KYCSetup = ({ accountDetails, setAccountDetails }: KYCSetupParams) => {
 
           <button
             onClick={handlePrevious}
-            className="px-4 py-2 bg-gray-950 border-gray-700 border-2 rounded-md w-[55vh]"
+            className="px-4 py-2 bg-gray-950 border-gray-700 border-2 rounded-md w-full sm:w-[45%] lg:w-[55vh]"
           >
             PREVIOUS
           </button>
           <button
             type="submit"
-            className="px-4 py-2 bg-yellow-500 text-black rounded-md w-[55vh]"
+            className="px-4 py-2 bg-yellow-500 text-black rounded-md w-full sm:w-[45%] lg:w-[55vh]"
           >
             NEXT
           </button>
         </form>
-      </div>
-
-      <div className="fixed right-6 top-1/2 transform -translate-y-1/2 mr-32">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center">
-            1
-          </div>
-          <div className="text-sm">Personal Information</div>
-          <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center">
-            2
-          </div>
-          <div className="text-sm">Verify your Identity</div>
-          <div className="w-8 h-8 rounded-full bg-gray-900  flex items-center justify-center">
-            3
-          </div>
-          <div className="text-sm">Photo Selfie with ID</div>
-        </div>
       </div>
     </div>
   );
